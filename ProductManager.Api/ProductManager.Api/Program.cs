@@ -2,6 +2,16 @@ using Microsoft.EntityFrameworkCore;
 using ProductManager.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // IMPORTANT: Use your Angular app's URL
+                   .AllowAnyMethod()                   // Allows GET, POST, PUT, DELETE, etc.
+                   .AllowAnyHeader();                  // Allows any headers in the request
+        });
+});
 
 // Add services to the container.
 
@@ -18,7 +28,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -26,6 +36,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAngularApp");
 
 app.UseAuthorization();
 
